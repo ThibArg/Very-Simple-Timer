@@ -82,6 +82,10 @@ struct ContentView: View {
                     .disabled(timerRunning)
             }
             .padding(.bottom, 6)
+            
+            Text(statusText)
+                .font(.system(size: 13))
+                .foregroundStyle(.secondary)
 
             Divider()
 
@@ -98,17 +102,11 @@ struct ContentView: View {
                         .fill(Color(nsColor: .separatorColor))
                         .frame(height: 1)
                     Rectangle()
-                        .fill(Color.accentColor)
+                        .fill(timerRunning ? Color.accentColor : Color(nsColor: .separatorColor))
                         .frame(width: geo.size.width * progress, height: 1)
                 }
             }
             .frame(height: 1)
-
-            Text(statusText)
-                .font(.system(size: 13))
-                .foregroundStyle(.secondary)
-
-            Spacer()
         }
         .padding(20)
         // Native macOS window background
