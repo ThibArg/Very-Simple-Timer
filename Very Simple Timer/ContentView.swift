@@ -38,6 +38,11 @@ struct ContentView: View {
         let minutesLeft = max(0, Int(ceil(secondsLeft / 60.0)))
         return minutesLeft * 60
     }
+    
+    private var progress: Double {
+        guard totalSeconds > 0 else { return 0 }
+        return min(1, max(0, Double(remainingSeconds) / Double(totalSeconds)))
+    }
 
     var body: some View {
         VStack(spacing: 16) {
@@ -56,13 +61,13 @@ struct ContentView: View {
                     }
                 }
                 .frame(width: 180)
-                .onChange(of: selectedPreset) { newValue in
-                    if newValue == "Custom…" {
+                .onChange(of: selectedPreset) {
+                    if selectedPreset == "Custom…" {
                         customInput = ""
                         customSheetPresented = true
                     } else {
-                        originalLabel = newValue
-                        totalSeconds = hmToSeconds(newValue)
+                        originalLabel = selectedPreset
+                        totalSeconds = hmToSeconds(selectedPreset)
                         remainingSeconds = totalSeconds
                         endDate = nil
                         statusText = "Duration selected. Press Start when ready."
@@ -74,23 +79,30 @@ struct ContentView: View {
                 Button("Start", action: startTimer)
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
+                    .disabled(timerRunning)
             }
             .padding(.bottom, 6)
 
-            // Native separators
-            Rectangle()
-                .fill(Color(nsColor: .separatorColor))
-                .frame(height: 1)
+            Divider()
 
             // NOTE: Use displayedRemainingSeconds instead of remainingSeconds
             Text(secondsToHMString(displayedRemainingSeconds))
                 .font(.system(size: 84, weight: .medium, design: .rounded))
                 .monospacedDigit()
                 .foregroundStyle(.primary)
-
-            Rectangle()
-                .fill(Color(nsColor: .separatorColor))
-                .frame(height: 1)
+            
+            
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Rectangle()
+                        .fill(Color(nsColor: .separatorColor))
+                        .frame(height: 1)
+                    Rectangle()
+                        .fill(Color.accentColor)
+                        .frame(width: geo.size.width * progress, height: 1)
+                }
+            }
+            .frame(height: 1)
 
             Text(statusText)
                 .font(.system(size: 13))
@@ -254,3 +266,4 @@ struct CustomInputSheet: View {
         .background(Color(nsColor: .windowBackgroundColor))
     }
 }
+
