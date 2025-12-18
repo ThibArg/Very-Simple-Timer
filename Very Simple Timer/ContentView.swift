@@ -49,11 +49,6 @@ struct ContentView: View {
 
             // Controls row (native macOS look)
             HStack(spacing: 12) {
-                Button("Reset", action: resetTimer)
-                    .buttonStyle(.bordered)
-                    .keyboardShortcut("r", modifiers: [.command])
-
-                Spacer()
 
                 Picker("How long?", selection: $selectedPreset) {
                     ForEach(presets, id: \.self) { p in
@@ -72,14 +67,16 @@ struct ContentView: View {
                         endDate = nil
                         statusText = "Duration selected. Press Start when ready."
                     }
+                }                
+
+                if timerRunning {
+                    Button("Reset", action: resetTimer)
+                        .buttonStyle(.bordered)
+                } else {
+                    Button("Start", action: startTimer)
+                        .buttonStyle(.borderedProminent)
+                        .keyboardShortcut(.defaultAction)
                 }
-
-                Spacer()
-
-                Button("Start", action: startTimer)
-                    .buttonStyle(.borderedProminent)
-                    .keyboardShortcut(.defaultAction)
-                    .disabled(timerRunning)
             }
             .padding(.bottom, 6)
             

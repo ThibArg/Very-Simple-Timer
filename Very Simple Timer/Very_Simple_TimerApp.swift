@@ -10,8 +10,13 @@ import SwiftUI
 @main
 struct Very_Simple_TimerApp: App {
     var body: some Scene {
+        
         WindowGroup {
             ContentView()
+                .frame(minWidth: 400, minHeight: 270)
         }
+        .windowResizability(.contentSize)
+        .defaultSize(width: 400, height: 270)
     }
 }
+
